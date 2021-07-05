@@ -1,0 +1,10 @@
+.title {
+  margin: 2rem;
+}
+
+.product-card {
+  margin: 1rem;
+  max-width: 400px;
+  display: flex;
+  justify-content: space-between;
+}

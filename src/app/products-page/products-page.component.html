@@ -1,0 +1,16 @@
+<div>
+  <h2 class="title">{{title}}</h2>
+
+  <div>
+    <mat-card *ngFor="let product of products" class="product-card">
+      <mat-card-header>
+        <mat-card-title>{{product?.name}}</mat-card-title>
+        <mat-card-subtitle>Price: {{product?.price}}$</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-actions *ngIf="pageType !== pageTypes.BASKET">
+        <button mat-raised-button color="primary" mat-button (click)="addProduct(product?.id)">BUY</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
