@@ -1,5 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 import { PageTypes, Product } from "../models";
 import { ProductService } from "../services/product.service";
@@ -15,19 +17,20 @@ enum TitleValues {
   templateUrl: './products-page.component.html',
   styleUrls: ['./products-page.component.css']
 })
-export class ProductsPageComponent {
+export class ProductsPageComponent implements OnDestroy {
   public products: (Product | undefined)[] = [];
   public pageTypes: typeof PageTypes = PageTypes;
   public pageType: string = '';
   public categoryId: number = 0;
   public title: string = '';
+  public until$ = new Subject();
 
   constructor(
     public service: ProductService,
     public route: ActivatedRoute,
     private router: Router
   ) {
-    router.events.subscribe((val) => {
+    router.events.pipe(takeUntil(this.until$)).subscribe((val) => {
       if (val instanceof NavigationEnd) {
         this.pageType = this.route.snapshot.data['type'];
         this.categoryId = +route.snapshot.params.id;
@@ -55,5 +58,10 @@ export class ProductsPageComponent {
     if (id) {
       this.service.addProduct(id)
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.until$.next();
+    this.until$.complete();
   }
 }
